@@ -79,11 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setLoadingState(true);
 
     try {
-      // Check if running on VS Code Live Server (port 5500)
-      const isLiveServer = window.location.port === "5500";
-      const baseUrl = isLiveServer ? "http://127.0.0.1:8000" : "";
-    
-      const response = await fetch(`${baseUrl}/predict`, {
+      // Live Backend URL (Render Web Service)
+      const BACKEND_URL = "https://nyc-airbnb-room-type-prediction-9ody.onrender.com";
+
+      const response = await fetch(`${BACKEND_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -108,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } finally {
       setLoadingState(false);
     }
-  }); // <-- Closing bracket fixed here
+  });
 
   // UI State Handlers
   function setLoadingState(isLoading) {
