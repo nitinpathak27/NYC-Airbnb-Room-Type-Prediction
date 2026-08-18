@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airbnb Room Type Predictor</title>
+  <link rel="stylesheet" href="/style.css" />
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <main class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-pill">
+        <i data-lucide="sparkles"></i>
+        <span>AI Listing Intelligence</span>
+      </div>
+      <h1>Predict Room Type</h1>
+      <p>Estimate listing category and model confidence based on geospatial and rental metrics.</p>
+    </header>
+
+    <div class="app-grid">
+      <!-- Form Card -->
+      <section class="card form-card">
+        <form id="prediction-form" novalidate>
+          <div class="section-title">
+            <i data-lucide="map-pin"></i>
+            <h3>Location Details</h3>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="neighbourhood_group">Borough / Group</label>
+              <input type="text" id="neighbourhood_group" name="neighbourhood_group" placeholder="e.g., Manhattan" required />
+            </div>
+            <div class="form-group">
+              <label for="neighbourhood">Neighbourhood</label>
+              <input type="text" id="neighbourhood" name="neighbourhood" placeholder="e.g., Midtown" required />
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="latitude">Latitude</label>
+              <input type="number" step="any" id="latitude" name="latitude" min="-90" max="90" placeholder="40.7580" required />
+            </div>
+            <div class="form-group">
+              <label for="longitude">Longitude</label>
+              <input type="number" step="any" id="longitude" name="longitude" min="-180" max="180" placeholder="-73.9855" required />
+            </div>
+          </div>
+
+          <div class="section-title mt-4">
+            <i data-lucide="sliders"></i>
+            <h3>Listing Attributes</h3>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="price">Price Per Night ($)</label>
+              <input type="number" step="any" id="price" name="price" min="1" placeholder="150" required />
+            </div>
+            <div class="form-group">
+              <label for="minimum_nights">Minimum Nights</label>
+              <input type="number" id="minimum_nights" name="minimum_nights" min="1" max="365" placeholder="2" required />
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="number_of_reviews">Total Reviews</label>
+              <input type="number" id="number_of_reviews" name="number_of_reviews" min="0" placeholder="45" required />
+            </div>
+            <div class="form-group">
+              <label for="reviews_per_month">Reviews / Month</label>
+              <input type="number" step="any" id="reviews_per_month" name="reviews_per_month" min="0" placeholder="1.25" required />
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="calculated_host_listings_count">Host Listings Count</label>
+              <input type="number" id="calculated_host_listings_count" name="calculated_host_listings_count" min="0" placeholder="1" required />
+            </div>
+            <div class="form-group">
+              <label for="availability_365">Availability (Days / 365)</label>
+              <input type="number" id="availability_365" name="availability_365" min="0" max="365" placeholder="180" required />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btn-sample" class="btn btn-secondary">
+              <i data-lucide="wand-2"></i> Fill Sample
+            </button>
+            <button type="submit" id="btn-submit" class="btn btn-primary">
+              <span class="btn-text">Classify Listing</span>
+              <span class="spinner hidden"></span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Results Card -->
+      <section class="card result-card" id="result-card">
+        <!-- Initial Blank State -->
+        <div id="state-empty" class="result-placeholder">
+          <div class="icon-ring">
+            <i data-lucide="building-2"></i>
+          </div>
+          <h4>No Prediction Yet</h4>
+          <p>Complete the form parameters and click <strong>Classify Listing</strong> to see ML pipeline inference results.</p>
+        </div>
+
+        <!-- Success Output State -->
+        <div id="state-success" class="result-content hidden">
+          <span class="badge">Model Output</span>
+          <h2 id="predicted-class">Entire home/apt</h2>
+
+          <div class="stats-banner">
+            <div class="stat-item">
+              <span class="stat-label">Top Confidence</span>
+              <span class="stat-val" id="top-confidence">0%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Status</span>
+              <span class="stat-val text-success">200 OK</span>
+            </div>
+          </div>
+
+          <div class="distribution-header">
+            <h4>Class Probability Distribution</h4>
+          </div>
+
+          <div class="probability-bars" id="probability-container">
+            <!-- Dynamically generated bars -->
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="state-error" class="result-error hidden">
+          <i data-lucide="alert-triangle"></i>
+          <h4 id="error-title">Inference Error</h4>
+          <p id="error-message">Failed to retrieve predictions from server.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/script.js"></script>
+</body>
+</html>
