@@ -79,10 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setLoadingState(true);
 
     try {
-      // Dynamic base URL: Works on Live Server (port 5500), FastAPI local (port 8000), and Render
+      // Check if running on VS Code Live Server (port 5500)
       const isLiveServer = window.location.port === "5500";
       const baseUrl = isLiveServer ? "http://127.0.0.1:8000" : "";
-
+    
       const response = await fetch(`${baseUrl}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
